@@ -10,13 +10,14 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+    lib.linkLibC();
+    lib.defineCMacro("USE_ALLOCA", null);
+    lib.defineCMacro("OPUS_BUILD", null);
     lib.addIncludePath("include");
     lib.addIncludePath("celt");
     lib.addIncludePath("silk");
-    lib.defineCMacro("USE_ALLOCA", null);
-    lib.defineCMacro("OPUS_BUILD", null);
     lib.addCSourceFiles(&sources, &.{});
-    lib.linkLibC();
+    lib.installHeadersDirectory("include", "");
     b.installArtifact(lib);
 }
 
