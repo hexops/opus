@@ -26,7 +26,6 @@ const sources = [_][]const u8{
     "src/mapping_matrix.c",
     "src/mlp_data.c",
     "src/mlp.c",
-    "src/opus_compare.c",
     "src/opus_decoder.c",
     "src/opus_encoder.c",
     "src/opus_multistream_decoder.c",
