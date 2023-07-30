@@ -22,6 +22,18 @@ pub fn build(b: *std.Build) void {
 }
 
 const sources = [_][]const u8{
+    "src/analysis.c",
+    "src/mapping_matrix.c",
+    "src/mlp_data.c",
+    "src/mlp.c",
+    "src/opus_compare.c",
     "src/opus_decoder.c",
     "src/opus_encoder.c",
+    "src/opus_multistream_decoder.c",
+    "src/opus_multistream_encoder.c",
+    "src/opus_multistream.c",
+    "src/opus_projection_decoder.c",
+    "src/opus_projection_encoder.c",
+    "src/opus.c",
+    "src/repacketizer.c",
 };
