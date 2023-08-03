@@ -15,13 +15,13 @@ pub fn build(b: *std.Build) void {
     lib.defineCMacro("USE_ALLOCA", null);
     lib.defineCMacro("OPUS_BUILD", null);
     lib.defineCMacro("HAVE_CONFIG_H", null);
-    lib.addIncludePath(".");
-    lib.addIncludePath("include");
-    lib.addIncludePath("celt");
-    lib.addIncludePath("silk");
-    lib.addIncludePath("celt/arm");
-    lib.addIncludePath("silk/float");
-    lib.addIncludePath("silk/fixed");
+    lib.addIncludePath(.{ .path = "." });
+    lib.addIncludePath(.{ .path = "include" });
+    lib.addIncludePath(.{ .path = "celt" });
+    lib.addIncludePath(.{ .path = "silk" });
+    lib.addIncludePath(.{ .path = "celt/arm" });
+    lib.addIncludePath(.{ .path = "silk/float" });
+    lib.addIncludePath(.{ .path = "silk/fixed" });
 
     lib.addCSourceFiles(sources, &.{});
     if (target.cpu.arch.isX86()) {
