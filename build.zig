@@ -23,7 +23,7 @@ pub fn build(b: *std.Build) void {
     lib.addIncludePath(.{ .path = "silk/float" });
     lib.addIncludePath(.{ .path = "silk/fixed" });
 
-    lib.addCSourceFiles(sources, &.{});
+    lib.addCSourceFiles(.{ .files = sources, .flags = &.{} });
     if (target.cpu.arch.isX86()) {
         const sse = target.cpu.features.isEnabled(@intFromEnum(std.Target.x86.Feature.sse));
         const sse2 = target.cpu.features.isEnabled(@intFromEnum(std.Target.x86.Feature.sse2));
@@ -39,10 +39,10 @@ pub fn build(b: *std.Build) void {
         });
         lib.addConfigHeader(config_header);
 
-        lib.addCSourceFiles(celt_sources_x86 ++ silk_sources_x86, &.{});
-        if (sse) lib.addCSourceFiles(celt_sources_sse, &.{});
-        if (sse2) lib.addCSourceFiles(celt_sources_sse2, &.{});
-        if (sse4_1) lib.addCSourceFiles(celt_sources_sse4_1, &.{});
+        lib.addCSourceFiles(.{ .files = celt_sources_x86 ++ silk_sources_x86, .flags = &.{} });
+        if (sse) lib.addCSourceFiles(.{ .files = celt_sources_sse, .flags = &.{} });
+        if (sse2) lib.addCSourceFiles(.{ .files = celt_sources_sse2, .flags = &.{} });
+        if (sse4_1) lib.addCSourceFiles(.{ .files = celt_sources_sse4_1, .flags = &.{} });
     }
 
     if (target.cpu.arch.isAARCH64() or target.cpu.arch.isARM()) {
@@ -55,8 +55,8 @@ pub fn build(b: *std.Build) void {
         });
         lib.addConfigHeader(config_header);
 
-        lib.addCSourceFiles(celt_sources_arm ++ silk_sources_arm, &.{});
-        if (neon) lib.addCSourceFiles(celt_sources_arm_neon ++ silk_sources_arm_neon, &.{});
+        lib.addCSourceFiles(.{ .files = celt_sources_arm ++ silk_sources_arm, .flags = &.{} });
+        if (neon) lib.addCSourceFiles(.{ .files = celt_sources_arm_neon ++ silk_sources_arm_neon, .flags = &.{} });
     }
 
     lib.installHeadersDirectory("include", "");
