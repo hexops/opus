@@ -4,7 +4,7 @@ const builtin = @import("builtin");
 pub fn build(b: *std.Build) void {
     const cross_target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const target = cross_target.toTarget();
+    const target = cross_target.result;
 
     const lib = b.addStaticLibrary(.{
         .name = "opus",
