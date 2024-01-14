@@ -23,26 +23,43 @@ pub fn build(b: *std.Build) void {
     lib.addIncludePath(.{ .path = "silk/float" });
     lib.addIncludePath(.{ .path = "silk/fixed" });
 
-    lib.addCSourceFiles(.{ .files = sources, .flags = &.{} });
+    lib.addCSourceFiles(.{ .files = sources ++ silk_sources_float, .flags = &.{} });
     if (target.cpu.arch.isX86()) {
         const sse = target.cpu.features.isEnabled(@intFromEnum(std.Target.x86.Feature.sse));
         const sse2 = target.cpu.features.isEnabled(@intFromEnum(std.Target.x86.Feature.sse2));
         const sse4_1 = target.cpu.features.isEnabled(@intFromEnum(std.Target.x86.Feature.sse4_1));
 
-        const config_header = b.addConfigHeader(.{ .style = .blank }, .{
-            .OPUS_X86_MAY_HAVE_SSE = sse,
-            .OPUS_X86_MAY_HAVE_SSE2 = sse2,
-            .OPUS_X86_MAY_HAVE_SSE4_1 = sse4_1,
-            .OPUS_X86_PRESUME_SSE = sse,
-            .OPUS_X86_PRESUME_SSE2 = sse2,
-            .OPUS_X86_PRESUME_SSE4_1 = sse4_1,
-        });
-        lib.addConfigHeader(config_header);
+        // addConfigHeader is a bit painful to work with when the check is #if defined(FOO)
+        if (sse and sse2 and sse4_1) {
+            const config_header = b.addConfigHeader(.{ .style = .blank }, .{
+                .OPUS_X86_MAY_HAVE_SSE = 1,
+                .OPUS_X86_MAY_HAVE_SSE2 = 1,
+                .OPUS_X86_MAY_HAVE_SSE4_1 = 1,
+                .OPUS_X86_PRESUME_SSE = 1,
+                .OPUS_X86_PRESUME_SSE2 = 1,
+                .OPUS_X86_PRESUME_SSE4_1 = 1,
+            });
+            lib.addConfigHeader(config_header);
+        } else if (sse and sse2) {
+            const config_header = b.addConfigHeader(.{ .style = .blank }, .{
+                .OPUS_X86_MAY_HAVE_SSE = 1,
+                .OPUS_X86_MAY_HAVE_SSE2 = 1,
+                .OPUS_X86_PRESUME_SSE = 1,
+                .OPUS_X86_PRESUME_SSE2 = 1,
+            });
+            lib.addConfigHeader(config_header);
+        } else if (sse) {
+            const config_header = b.addConfigHeader(.{ .style = .blank }, .{
+                .OPUS_X86_MAY_HAVE_SSE = 1,
+                .OPUS_X86_PRESUME_SSE = 1,
+            });
+            lib.addConfigHeader(config_header);
+        }
 
         lib.addCSourceFiles(.{ .files = celt_sources_x86 ++ silk_sources_x86, .flags = &.{} });
         if (sse) lib.addCSourceFiles(.{ .files = celt_sources_sse, .flags = &.{} });
         if (sse2) lib.addCSourceFiles(.{ .files = celt_sources_sse2, .flags = &.{} });
-        if (sse4_1) lib.addCSourceFiles(.{ .files = celt_sources_sse4_1, .flags = &.{} });
+        if (sse4_1) lib.addCSourceFiles(.{ .files = celt_sources_sse4_1 ++ silk_sources_sse4_1, .flags = &.{} });
     }
 
     if (target.cpu.arch.isAARCH64() or target.cpu.arch.isARM()) {
