@@ -15,13 +15,13 @@ pub fn build(b: *std.Build) void {
     lib.defineCMacro("USE_ALLOCA", null);
     lib.defineCMacro("OPUS_BUILD", null);
     lib.defineCMacro("HAVE_CONFIG_H", null);
-    lib.addIncludePath(.{ .path = "." });
-    lib.addIncludePath(.{ .path = "include" });
-    lib.addIncludePath(.{ .path = "celt" });
-    lib.addIncludePath(.{ .path = "silk" });
-    lib.addIncludePath(.{ .path = "celt/arm" });
-    lib.addIncludePath(.{ .path = "silk/float" });
-    lib.addIncludePath(.{ .path = "silk/fixed" });
+    lib.addIncludePath(b.path("."));
+    lib.addIncludePath(b.path("include"));
+    lib.addIncludePath(b.path("celt"));
+    lib.addIncludePath(b.path("silk"));
+    lib.addIncludePath(b.path("celt/arm"));
+    lib.addIncludePath(b.path("silk/float"));
+    lib.addIncludePath(b.path("silk/fixed"));
 
     lib.addCSourceFiles(.{ .files = sources ++ silk_sources_float, .flags = &.{} });
     if (target.cpu.arch.isX86()) {
@@ -76,7 +76,7 @@ pub fn build(b: *std.Build) void {
         if (neon) lib.addCSourceFiles(.{ .files = celt_sources_arm_neon ++ silk_sources_arm_neon, .flags = &.{} });
     }
 
-    lib.installHeadersDirectory("include", "");
+    lib.installHeadersDirectory(b.path("include"), "", .{});
     b.installArtifact(lib);
 }
 
