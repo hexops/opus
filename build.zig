@@ -42,7 +42,7 @@ pub fn build(b: *std.Build) void {
         }
     }
 
-    if (target.cpu.arch.isARM() and std.Target.arm.featureSetHas(target.cpu.features, .neon) or
+    if (target.cpu.arch.isArm() and std.Target.arm.featureSetHas(target.cpu.features, .neon) or
         target.cpu.arch.isAARCH64() and std.Target.aarch64.featureSetHas(target.cpu.features, .neon))
     {
         lib.root_module.addCMacro("OPUS_ARM_MAY_HAVE_NEON_INTR", "1");
